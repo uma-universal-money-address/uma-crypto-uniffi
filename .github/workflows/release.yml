@@ -1,0 +1,57 @@
+name: "Release"
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New release version, eg. 0.MINOR.PATCH'
+        required: true
+        type: string
+
+jobs:
+  build-kotlin:
+    name: Build and package kotlin library
+    runs-on: macos-12
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          path: build
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build JVM
+        working-directory: build
+        run: |
+          make build-jvm -j2
+
+      - name: Setup artifact
+        working-directory: build
+        run: |
+          zip -9 -r uma-cryptoFFI-kotlin.zip uma-crypto-kotlin/
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "uma-cryptoFFI-kotlin"
+          path: "build/uma-cryptoFFI-kotlin.zip"
+
+  create-release:
+    name: Create release and tag
+    needs: [build-kotlin, build-swift]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download kotlin artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: uma-cryptoFFI-kotlin
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "./uma-cryptoFFI*"
+          tag: ${{ inputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ inputs.version }}
+          prerelease: true

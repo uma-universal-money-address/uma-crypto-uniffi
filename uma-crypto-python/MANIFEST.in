@@ -1,0 +1,3 @@
+include ./src/uma_crypto/libuniffi_uma_crypto.dylib
+include ./src/uma_crypto/uma_crypto.dll
+include ./src/uma_crypto/libuniffi_uma_crypto.so
