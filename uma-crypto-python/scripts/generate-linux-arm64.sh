@@ -12,6 +12,6 @@ echo "Generating native binaries..."
 docker buildx build -f build.Dockerfile --platform linux/arm64 -o docker-out .
 
 echo "Copying linux binary..."
-cp docker-out/target/aarch64-unknown-linux-gnu/release-smaller/uma_crypto.so uma-crypto-python/src/uma_crypto/libuniffi_uma_crypto.so
+cp docker-out/target/aarch64-unknown-linux-gnu/release-smaller/libuma_crypto.so uma-crypto-python/src/uma_crypto/libuniffi_uma_crypto.so
 
 echo "All done!"
