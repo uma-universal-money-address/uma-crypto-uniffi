@@ -23,5 +23,4 @@ interface KeyPair {
 [Error]
 enum CryptoError {
   "Secp256k1Error",
-  "RustSecp256k1Error",
 };
