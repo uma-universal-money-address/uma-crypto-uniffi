@@ -47,66 +47,66 @@ typedef struct RustCallStatus {
 // ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
 #endif // def UNIFFI_SHARED_H
 
-void ffi_uma_crypto_d9b9_KeyPair_object_free(
+void ffi_uma_crypto_b9a_KeyPair_object_free(
 	void* ptr,
 	RustCallStatus* out_status
 );
 
-RustBuffer uma_crypto_d9b9_KeyPair_get_public_key(
+RustBuffer uma_crypto_b9a_KeyPair_get_public_key(
 	void* ptr,
 	RustCallStatus* out_status
 );
 
-RustBuffer uma_crypto_d9b9_KeyPair_get_private_key(
+RustBuffer uma_crypto_b9a_KeyPair_get_private_key(
 	void* ptr,
 	RustCallStatus* out_status
 );
 
-RustBuffer uma_crypto_d9b9_sign_ecdsa(
+RustBuffer uma_crypto_b9a_sign_ecdsa(
 	RustBuffer msg,
 	RustBuffer private_key_bytes,
 	RustCallStatus* out_status
 );
 
-int8_t uma_crypto_d9b9_verify_ecdsa(
+int8_t uma_crypto_b9a_verify_ecdsa(
 	RustBuffer msg,
 	RustBuffer signature_bytes,
 	RustBuffer public_key_bytes,
 	RustCallStatus* out_status
 );
 
-RustBuffer uma_crypto_d9b9_encrypt_ecies(
+RustBuffer uma_crypto_b9a_encrypt_ecies(
 	RustBuffer msg,
 	RustBuffer public_key_bytes,
 	RustCallStatus* out_status
 );
 
-RustBuffer uma_crypto_d9b9_decrypt_ecies(
+RustBuffer uma_crypto_b9a_decrypt_ecies(
 	RustBuffer cipher_text,
 	RustBuffer private_key_bytes,
 	RustCallStatus* out_status
 );
 
-void* uma_crypto_d9b9_generate_keypair(
+void* uma_crypto_b9a_generate_keypair(
 	RustCallStatus* out_status
 );
 
-RustBuffer ffi_uma_crypto_d9b9_rustbuffer_alloc(
+RustBuffer ffi_uma_crypto_b9a_rustbuffer_alloc(
 	int32_t size,
 	RustCallStatus* out_status
 );
 
-RustBuffer ffi_uma_crypto_d9b9_rustbuffer_from_bytes(
+RustBuffer ffi_uma_crypto_b9a_rustbuffer_from_bytes(
 	ForeignBytes bytes,
 	RustCallStatus* out_status
 );
 
-void ffi_uma_crypto_d9b9_rustbuffer_free(
+void ffi_uma_crypto_b9a_rustbuffer_free(
 	RustBuffer buf,
 	RustCallStatus* out_status
 );
 
-RustBuffer ffi_uma_crypto_d9b9_rustbuffer_reserve(
+RustBuffer ffi_uma_crypto_b9a_rustbuffer_reserve(
 	RustBuffer buf,
 	int32_t additional,
 	RustCallStatus* out_status
@@ -171,7 +171,7 @@ func stringToCRustBuffer(str string) C.RustBuffer {
 
 func (rb rustBuffer) free() {
 	rustCall(func(status *C.RustCallStatus) bool {
-		C.ffi_uma_crypto_d9b9_rustbuffer_free(rb.self, status)
+		C.ffi_uma_crypto_b9a_rustbuffer_free(rb.self, status)
 		return false
 	})
 }
@@ -573,7 +573,7 @@ func (_self *KeyPair) GetPublicKey() []uint8 {
 	defer _self.ffiObject.decrementPointer()
 
 	return FfiConverterSequenceuint8INSTANCE.lift(rustCall(func(_uniffiStatus *C.RustCallStatus) C.RustBuffer {
-		return C.uma_crypto_d9b9_KeyPair_get_public_key(
+		return C.uma_crypto_b9a_KeyPair_get_public_key(
 			_pointer, _uniffiStatus)
 	}))
 
@@ -583,7 +583,7 @@ func (_self *KeyPair) GetPrivateKey() []uint8 {
 	defer _self.ffiObject.decrementPointer()
 
 	return FfiConverterSequenceuint8INSTANCE.lift(rustCall(func(_uniffiStatus *C.RustCallStatus) C.RustBuffer {
-		return C.uma_crypto_d9b9_KeyPair_get_private_key(
+		return C.uma_crypto_b9a_KeyPair_get_private_key(
 			_pointer, _uniffiStatus)
 	}))
 
@@ -603,7 +603,7 @@ func (c FfiConverterKeyPair) lift(pointer unsafe.Pointer) *KeyPair {
 		newFfiObject(
 			pointer,
 			func(pointer unsafe.Pointer, status *C.RustCallStatus) {
-				C.ffi_uma_crypto_d9b9_KeyPair_object_free(pointer, status)
+				C.ffi_uma_crypto_b9a_KeyPair_object_free(pointer, status)
 			}),
 	}
 	runtime.SetFinalizer(result, (*KeyPair).Destroy)
@@ -647,7 +647,6 @@ func (err CryptoError) Unwrap() error {
 
 // Err* are used for checking error type with `errors.Is`
 var ErrCryptoErrorSecp256k1Error = fmt.Errorf("CryptoErrorSecp256k1Error")
-var ErrCryptoErrorRustSecp256k1Error = fmt.Errorf("CryptoErrorRustSecp256k1Error")
 
 // Variant structs
 type CryptoErrorSecp256k1Error struct {
@@ -666,24 +665,6 @@ func (err CryptoErrorSecp256k1Error) Error() string {
 
 func (self CryptoErrorSecp256k1Error) Is(target error) bool {
 	return target == ErrCryptoErrorSecp256k1Error
-}
-
-type CryptoErrorRustSecp256k1Error struct {
-	message string
-}
-
-func NewCryptoErrorRustSecp256k1Error() *CryptoError {
-	return &CryptoError{
-		err: &CryptoErrorRustSecp256k1Error{},
-	}
-}
-
-func (err CryptoErrorRustSecp256k1Error) Error() string {
-	return fmt.Sprintf("RustSecp256k1Error: %s", err.message)
-}
-
-func (self CryptoErrorRustSecp256k1Error) Is(target error) bool {
-	return target == ErrCryptoErrorRustSecp256k1Error
 }
 
 type FfiConverterTypeCryptoError struct{}
@@ -706,8 +687,6 @@ func (c FfiConverterTypeCryptoError) read(reader io.Reader) error {
 	switch errorID {
 	case 1:
 		return &CryptoError{&CryptoErrorSecp256k1Error{message}}
-	case 2:
-		return &CryptoError{&CryptoErrorRustSecp256k1Error{message}}
 	default:
 		panic(fmt.Sprintf("Unknown error code %d in FfiConverterTypeCryptoError.read()", errorID))
 	}
@@ -718,8 +697,6 @@ func (c FfiConverterTypeCryptoError) write(writer io.Writer, value *CryptoError)
 	switch variantValue := value.err.(type) {
 	case *CryptoErrorSecp256k1Error:
 		writeInt32(writer, 1)
-	case *CryptoErrorRustSecp256k1Error:
-		writeInt32(writer, 2)
 	default:
 		_ = variantValue
 		panic(fmt.Sprintf("invalid error value `%v` in FfiConverterTypeCryptoError.write", value))
@@ -772,7 +749,7 @@ func (FfiDestroyerSequenceuint8) destroy(sequence []uint8) {
 func SignEcdsa(msg []uint8, privateKeyBytes []uint8) ([]uint8, error) {
 
 	_uniffiRV, _uniffiErr := rustCallWithError(FfiConverterTypeCryptoError{}, func(_uniffiStatus *C.RustCallStatus) C.RustBuffer {
-		return C.uma_crypto_d9b9_sign_ecdsa(FfiConverterSequenceuint8INSTANCE.lower(msg), FfiConverterSequenceuint8INSTANCE.lower(privateKeyBytes), _uniffiStatus)
+		return C.uma_crypto_b9a_sign_ecdsa(FfiConverterSequenceuint8INSTANCE.lower(msg), FfiConverterSequenceuint8INSTANCE.lower(privateKeyBytes), _uniffiStatus)
 	})
 	if _uniffiErr != nil {
 		var _uniffiDefaultValue []uint8
@@ -786,7 +763,7 @@ func SignEcdsa(msg []uint8, privateKeyBytes []uint8) ([]uint8, error) {
 func VerifyEcdsa(msg []uint8, signatureBytes []uint8, publicKeyBytes []uint8) (bool, error) {
 
 	_uniffiRV, _uniffiErr := rustCallWithError(FfiConverterTypeCryptoError{}, func(_uniffiStatus *C.RustCallStatus) C.int8_t {
-		return C.uma_crypto_d9b9_verify_ecdsa(FfiConverterSequenceuint8INSTANCE.lower(msg), FfiConverterSequenceuint8INSTANCE.lower(signatureBytes), FfiConverterSequenceuint8INSTANCE.lower(publicKeyBytes), _uniffiStatus)
+		return C.uma_crypto_b9a_verify_ecdsa(FfiConverterSequenceuint8INSTANCE.lower(msg), FfiConverterSequenceuint8INSTANCE.lower(signatureBytes), FfiConverterSequenceuint8INSTANCE.lower(publicKeyBytes), _uniffiStatus)
 	})
 	if _uniffiErr != nil {
 		var _uniffiDefaultValue bool
@@ -800,7 +777,7 @@ func VerifyEcdsa(msg []uint8, signatureBytes []uint8, publicKeyBytes []uint8) (b
 func EncryptEcies(msg []uint8, publicKeyBytes []uint8) ([]uint8, error) {
 
 	_uniffiRV, _uniffiErr := rustCallWithError(FfiConverterTypeCryptoError{}, func(_uniffiStatus *C.RustCallStatus) C.RustBuffer {
-		return C.uma_crypto_d9b9_encrypt_ecies(FfiConverterSequenceuint8INSTANCE.lower(msg), FfiConverterSequenceuint8INSTANCE.lower(publicKeyBytes), _uniffiStatus)
+		return C.uma_crypto_b9a_encrypt_ecies(FfiConverterSequenceuint8INSTANCE.lower(msg), FfiConverterSequenceuint8INSTANCE.lower(publicKeyBytes), _uniffiStatus)
 	})
 	if _uniffiErr != nil {
 		var _uniffiDefaultValue []uint8
@@ -814,7 +791,7 @@ func EncryptEcies(msg []uint8, publicKeyBytes []uint8) ([]uint8, error) {
 func DecryptEcies(cipherText []uint8, privateKeyBytes []uint8) ([]uint8, error) {
 
 	_uniffiRV, _uniffiErr := rustCallWithError(FfiConverterTypeCryptoError{}, func(_uniffiStatus *C.RustCallStatus) C.RustBuffer {
-		return C.uma_crypto_d9b9_decrypt_ecies(FfiConverterSequenceuint8INSTANCE.lower(cipherText), FfiConverterSequenceuint8INSTANCE.lower(privateKeyBytes), _uniffiStatus)
+		return C.uma_crypto_b9a_decrypt_ecies(FfiConverterSequenceuint8INSTANCE.lower(cipherText), FfiConverterSequenceuint8INSTANCE.lower(privateKeyBytes), _uniffiStatus)
 	})
 	if _uniffiErr != nil {
 		var _uniffiDefaultValue []uint8
@@ -828,7 +805,7 @@ func DecryptEcies(cipherText []uint8, privateKeyBytes []uint8) ([]uint8, error) 
 func GenerateKeypair() (*KeyPair, error) {
 
 	_uniffiRV, _uniffiErr := rustCallWithError(FfiConverterTypeCryptoError{}, func(_uniffiStatus *C.RustCallStatus) unsafe.Pointer {
-		return C.uma_crypto_d9b9_generate_keypair(_uniffiStatus)
+		return C.uma_crypto_b9a_generate_keypair(_uniffiStatus)
 	})
 	if _uniffiErr != nil {
 		var _uniffiDefaultValue *KeyPair
