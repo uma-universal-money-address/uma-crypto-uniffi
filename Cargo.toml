@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 hex = "0.4.3"
-uniffi = "0.24.3"
+uniffi = "0.23.0"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -22,7 +22,7 @@ bitcoin_hashes = "0.13.0"
 default = ["uniffi/cli"]
 
 [build-dependencies]
-uniffi = { version = "0.24.3", features = [ "build" ] }
+uniffi = { version = "0.23.0", features = [ "build" ] }
 
 [lib]
 crate-type = ["cdylib", "staticlib"]
