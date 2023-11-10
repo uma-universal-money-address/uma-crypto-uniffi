@@ -2,8 +2,8 @@ package umacrypto
 
 // TODO(mhr): Dynamic linking?
 
-// #cgo darwin,amd64 LDFLAGS: -L${SRCDIR}/libs/darwin/amd64 -luma_crypto
-// #cgo darwin,arm64 LDFLAGS: -L${SRCDIR}/libs/darwin/arm64 -luma_crypto
+// #cgo darwin,amd64 LDFLAGS: -L${SRCDIR}/libs/darwin/amd64 -luma_crypto -Wl,--allow-multiple-definition
+// #cgo darwin,arm64 LDFLAGS: -L${SRCDIR}/libs/darwin/arm64 -luma_crypto -Wl,--allow-multiple-definition
 // #cgo linux,amd64 LDFLAGS: -L${SRCDIR}/libs/linux/amd64 -Wl,-Bstatic -luma_crypto -Wl,-Bdynamic
 // #cgo linux,arm64 LDFLAGS: -L${SRCDIR}/libs/linux/arm64 -Wl,-Bstatic -luma_crypto -Wl,-Bdynamic
 import "C"
