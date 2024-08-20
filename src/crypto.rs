@@ -14,7 +14,7 @@ use libsecp256k1::Signature;
 
 #[derive(Clone, Copy, Debug)]
 pub enum CryptoError {
-    Secp256k1Error(ecies::SecpError),
+    Secp256k1Error(libsecp256k1::Error),
 }
 
 #[derive(Clone)]
