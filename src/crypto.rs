@@ -112,17 +112,8 @@ pub fn generate_keypair() -> Result<Arc<KeyPair>, CryptoError> {
 
 #[derive(Clone)]
 pub struct Bech32Data {
-    hrp: String,
-    data: Vec<u8>
-}
-
-impl Bech32Data {
-    pub fn get_hrp(&self) -> String {
-        self.hrp.clone()
-    }
-    pub fn get_data(&self) -> Vec<u8> {
-        self.data.clone()
-    } 
+    pub hrp: String,
+    pub data: Vec<u8>
 }
 
 pub fn encode_bech32(
@@ -135,13 +126,13 @@ pub fn encode_bech32(
 
 pub fn decode_bech32(
     bech32_str: String
-) -> Result<Arc<Bech32Data>, Bech32Error> {
+) -> Result<Bech32Data, Bech32Error> {
     let hdata = bech32::decode(&bech32_str).map_err(Bech32Error::Bech32DecodeError)?;
     let bech_data = Bech32Data {
         hrp : hdata.0.to_string(),
         data : hdata.1
     };
-    Ok(bech_data.into())
+    Ok(bech_data)
 }
 
 #[cfg(test)]

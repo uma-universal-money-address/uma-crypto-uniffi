@@ -26,9 +26,9 @@ interface KeyPair {
     sequence<u8> get_private_key();
 };
 
-interface Bech32Data {
-  sequence<u8> get_data();
-  string get_hrp(); 
+dictionary Bech32Data {
+  sequence<u8> data;
+  string hrp; 
 };
 
 [Error]
