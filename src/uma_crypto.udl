@@ -13,6 +13,12 @@ namespace uma_crypto {
 
     [Throws=CryptoError]
     KeyPair generate_keypair();
+
+    [Throws=Bech32Error]
+    string encode_bech32(string hrp, sequence<u8> message_data);
+
+    [Throws=Bech32Error]
+    Bech32Data decode_bech32(string bech32_str);
 };
 
 interface KeyPair {
@@ -20,7 +26,18 @@ interface KeyPair {
     sequence<u8> get_private_key();
 };
 
+dictionary Bech32Data {
+  sequence<u8> data;
+  string hrp; 
+};
+
 [Error]
 enum CryptoError {
   "Secp256k1Error",
+};
+
+[Error]
+enum Bech32Error {
+  "Bech32EncodeError",
+  "Bech32DecodeError"
 };
