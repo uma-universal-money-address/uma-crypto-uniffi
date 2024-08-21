@@ -1,6 +1,7 @@
 use std::fmt;
 use std::sync::Arc;
 
+use bech32::{Bech32, Hrp};
 use bitcoin_hashes::sha256;
 use bitcoin_hashes::Hash;
 use ecies::decrypt;
@@ -14,7 +15,13 @@ use libsecp256k1::Signature;
 
 #[derive(Clone, Copy, Debug)]
 pub enum CryptoError {
-    Secp256k1Error(ecies::SecpError),
+    Secp256k1Error(libsecp256k1::Error),
+}
+
+#[derive(Clone, Debug)]
+pub enum Bech32Error {
+    Bech32EncodeError(bech32::EncodeError),
+    Bech32DecodeError(bech32::DecodeError)
 }
 
 #[derive(Clone)]
@@ -37,6 +44,15 @@ impl fmt::Display for CryptoError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::Secp256k1Error(err) => write!(f, "Secp256k1 error {}", err),
+        }
+    }
+}
+
+impl fmt::Display for Bech32Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Bech32DecodeError(err) => write!(f, "Bech32 Decoder Error {}", err),
+            Self::Bech32EncodeError(err) => write!(f, "Bech32 Encoder Error {}", err)
         }
     }
 }
@@ -92,6 +108,40 @@ pub fn generate_keypair() -> Result<Arc<KeyPair>, CryptoError> {
         public_key: pk.serialize().to_vec(),
     };
     Ok(keypair.into())
+}
+
+#[derive(Clone)]
+pub struct Bech32Data {
+    hrp: String,
+    data: Vec<u8>
+}
+
+impl Bech32Data {
+    pub fn get_hrp(&self) -> String {
+        self.hrp.clone()
+    }
+    pub fn get_data(&self) -> Vec<u8> {
+        self.data.clone()
+    } 
+}
+
+pub fn encode_bech32(
+    hrp: String,
+    message_data: Vec<u8>
+) -> Result<String, Bech32Error> {
+    let parsed_hrp = Hrp::parse(&hrp).expect("valid hrp");
+    bech32::encode::<Bech32>(parsed_hrp, &message_data).map_err(Bech32Error::Bech32EncodeError)
+}
+
+pub fn decode_bech32(
+    bech32_str: String
+) -> Result<Arc<Bech32Data>, Bech32Error> {
+    let hdata = bech32::decode(&bech32_str).map_err(Bech32Error::Bech32DecodeError)?;
+    let bech_data = Bech32Data {
+        hrp : hdata.0.to_string(),
+        data : hdata.1
+    };
+    Ok(bech_data.into())
 }
 
 #[cfg(test)]
