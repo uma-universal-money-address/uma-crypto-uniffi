@@ -40,8 +40,10 @@ jobs:
 
   create-release:
     name: Create release and tag
-    needs: [build-kotlin, build-swift]
+    needs: [build-kotlin]
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     steps:
       - name: Download kotlin artifacts
         uses: actions/download-artifact@v3
@@ -52,6 +54,5 @@ jobs:
         with:
           artifacts: "./uma-cryptoFFI*"
           tag: ${{ inputs.version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ inputs.version }}
           prerelease: true
